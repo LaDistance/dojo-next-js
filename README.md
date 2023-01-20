@@ -79,7 +79,7 @@ Vous pouvez aussi utiliser un provider maison.
 
 Il nous faudra répertorier deux applications chez GitHub : une application locale pour le développement, et une application pour la production.
 
-Répertorions ensemble l'application pour le développement à [cette adresse](https://github.com/settings/apps/new).
+Répertorions ensemble l'application pour le développement à [cette adresse](https://github.com/settings/applications/new).
 
 ![github_dev_app_creation](en/images/github_dev_app_creation.png)
 
