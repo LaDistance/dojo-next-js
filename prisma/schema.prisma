@@ -6,12 +6,13 @@ generator client {
 }
 
 datasource db {
-    provider = "sqlite"
+    provider = "postgresql"
     // NOTE: When using postgresql, mysql or sqlserver, uncomment the @db.Text annotations in model Account below
     // Further reading:
     // https://next-auth.js.org/adapters/prisma#create-the-prisma-schema
     // https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#string
     url      = env("DATABASE_URL")
+    shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
 }
 
 model Example {
@@ -48,13 +49,15 @@ model Session {
 }
 
 model User {
-    id            String    @id @default(cuid())
+    id            String          @id @default(cuid())
     name          String?
-    email         String?   @unique
+    email         String?         @unique
     emailVerified DateTime?
     image         String?
+    lists         List[]
     accounts      Account[]
     sessions      Session[]
+    LinkUserMovie LinkUserMovie[]
 }
 
 model VerificationToken {
@@ -66,10 +69,38 @@ model VerificationToken {
 }
 
 model Movie {
-    id                  String    @id @default(cuid())
-    imdb_id             String    @unique
-    title               String
-    release_date        DateTime
-    overview            String?
-    image_path          String?
+    id            String          @id @default(cuid())
+    imdb_id       String          @unique
+    title         String
+    release_date  DateTime
+    overview      String?
+    image_path    String?
+    LinkListMovie LinkListMovie[]
+    LinkUserMovie LinkUserMovie[]
+}
+
+model List {
+    id            String          @id @default(cuid())
+    name          String
+    user          User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+    userId        String
+    LinkListMovie LinkListMovie[]
+}
+
+model LinkListMovie {
+    id      String @id @default(cuid())
+    list    List   @relation(fields: [listId], references: [id], onDelete: Cascade)
+    listId  String
+    movie   Movie  @relation(fields: [movieId], references: [id], onDelete: Cascade)
+    movieId String
+}
+
+model LinkUserMovie {
+    id      String  @id @default(cuid())
+    user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+    userId  String
+    movie   Movie   @relation(fields: [movieId], references: [id], onDelete: Cascade)
+    movieId String
+    comment String?
+    rating  Int?
 }
