@@ -67,9 +67,9 @@ model VerificationToken {
 
 model Movie {
     id                  String    @id @default(cuid())
+    imdb_id             String    @unique
     title               String
     release_date        DateTime
-    image_path          String
-
-    @@unique([id, title])
+    overview            String?
+    image_path          String?
 }

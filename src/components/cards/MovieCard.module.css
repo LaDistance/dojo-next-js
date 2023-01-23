@@ -1,21 +1,3 @@
-.cardRow {
-  display: grid;
-  grid-template-columns: repeat(1, minmax(0, 1fr));
-  gap: 1rem;
-}
-
-@media (min-width: 640px) {
-  .cardRow {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-@media (min-width: 768px) {
-  .cardRow {
-    gap: 2rem;
-  }
-}
-
 .card {
   max-width: 20rem;
   min-height: 35rem;
@@ -30,6 +12,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  position: relative;
 }
 
 .cardImage {
@@ -57,4 +40,19 @@
   color: #ddd;
   font-size: 0.9rem;
   margin: 0;
+}
+
+.addToListBtn {
+  padding: 5px 5px 0 5px;
+  background-color: #000;
+  width: 33px;
+  position: absolute;
+  top: 0px;
+  right: 3px;
+  border-radius: 0 0.75rem 0 0.75rem;
+  font-size: 1.4rem;
+}
+
+.addToListBtn:hover {
+  background-color: rgb(189, 28, 28);
 }

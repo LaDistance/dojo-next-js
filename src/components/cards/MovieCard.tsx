@@ -2,6 +2,8 @@ import Image from "next/image";
 import { IMovie } from "../../types/movie";
 import styles from "./MovieCard.module.css";
 
+import { BiListPlus } from "react-icons/bi";
+
 export default function MovieCard(props: { movie: IMovie }) {
   const { movie } = props;
 
@@ -19,6 +21,11 @@ export default function MovieCard(props: { movie: IMovie }) {
               width="250"
               height="375"
             ></Image>
+            <a href="add-to-list">
+              <div className={styles.addToListBtn}>
+                <BiListPlus />
+              </div>
+            </a>
           </div>
           <p className={styles.cardInfo}>{movie.release_date}</p>
           <p className={styles.cardTitle}>{movie.title}</p>
