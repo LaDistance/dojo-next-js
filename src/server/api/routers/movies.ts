@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 import { env } from "../../../env/server.mjs";
-import { createTRPCRouter, publicProcedure } from "../trpc";
+import { createTRPCRouter, protectedProcedure } from "../trpc";
 
 export const movieSchema = z.object({
   poster_path: z.string(),
@@ -22,6 +22,7 @@ export const movieSchema = z.object({
 });
 
 export type Movie = z.infer<typeof movieSchema>;
+
 export const listResponseSchema = z.object({
   page: z.number(),
   results: z.array(movieSchema),
@@ -29,8 +30,10 @@ export const listResponseSchema = z.object({
   total_pages: z.number(),
 });
 
+
 export const moviesRouter = createTRPCRouter({
-  getPopular: publicProcedure.query(async () => {
+  
+  getPopular: protectedProcedure.query(async () => {
     const headers = { Authorization: `Bearer ${env.TMDB_BEARER_TOKEN}` };
 
     const response = await fetch(`${env.TMDB_API_BASE_URL}/movie/popular`, {
@@ -41,20 +44,20 @@ export const moviesRouter = createTRPCRouter({
 
     return parsedData.results;
   }),
-  getById: publicProcedure
+
+  getById: protectedProcedure
     .input(
       z
         .object({
           id: z.string(),
         })
-        .optional()
     )
     .query(async ({ input }) => {
       const headers = {
-        Authorization: `Bearer ${process.env.TMDB_BEARER_TOKEN}`,
+        Authorization: `Bearer ${env.TMDB_BEARER_TOKEN}`,
       };
       const response = await fetch(
-        `${process.env.TMDB_API_BASE_URL}/movie/${input?.id}`,
+        `${env.TMDB_API_BASE_URL}/movie/${input.id}`,
         {
           headers: headers,
         }

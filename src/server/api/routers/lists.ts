@@ -63,7 +63,9 @@ export const listsRouter = createTRPCRouter({
         },
       });
 
-      return list;
+      const myDate: Date = new Date();
+
+      return {list: list, mydate: myDate};
     }),
   getSecretMessage: protectedProcedure.query(() => {
     return "you can now see this secret message!";
