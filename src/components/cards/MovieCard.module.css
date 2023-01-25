@@ -30,6 +30,12 @@
   margin: 0;
 }
 
+.cardSubTitle {
+  color: #ddd;
+  font-size: 1rem;
+  margin: 0;
+}
+
 .cardText {
   color: #ddd;
   font-size: 1.125rem;
@@ -48,7 +54,7 @@
   width: 33px;
   position: absolute;
   top: 0px;
-  right: 3px;
+  right: 5px;
   border-radius: 0 0.75rem 0 0.75rem;
   font-size: 1.4rem;
 }

@@ -5,6 +5,7 @@
   justify-content: center;
   min-height: 100vh;
   background-image: linear-gradient(to bottom, #1c1a1f, #090a20);
+  color: #fff;
 }
 
 .container {

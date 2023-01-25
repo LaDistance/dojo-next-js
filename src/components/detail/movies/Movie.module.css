@@ -1,0 +1,28 @@
+.description {
+  max-width: 50%;
+  padding-top: 30px;
+}
+
+.movieDetail {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.movieInfo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 30px;
+}
+
+.movieCard {
+  display: flex;
+}
+
+.label {
+  background-color: rgb(77, 65, 187);
+  border-radius: 5px;
+  padding: 4px;
+  margin: 3px;
+}
