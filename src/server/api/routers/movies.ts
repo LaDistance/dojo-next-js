@@ -47,10 +47,9 @@ export const moviesRouter = createTRPCRouter({
 
   getById: protectedProcedure
     .input(
-      z
-        .object({
-          id: z.string(),
-        })
+      z.object({
+        id: z.string(),
+      })
     )
     .query(async ({ input }) => {
       const headers = {

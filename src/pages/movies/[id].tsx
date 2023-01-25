@@ -1,10 +1,20 @@
-import { GetServerSideProps } from "next";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 import MovieDetail from "../../components/detail/movies/Movie";
 import { api } from "../../utils/api";
 import styles from "./[id].module.css";
 
-const MovieDetailPage = ({ id }: { id: string }) => {
-  const movie = api.movies.getById.useQuery({ id: id });
+const MovieDetailPage = () => {
+  const router = useRouter();
+  const [movieId, setMovieId] = useState<string>("");
+
+  useEffect(() => {
+    if (!router.isReady) return;
+    const query = router.query;
+    setMovieId(query?.id);
+  }, [router.isReady, router.query]);
+
+  const movie = api.movies.getById.useQuery({ id: movieId });
 
   if (movie.isLoading) return <div>Loading...</div>;
 
@@ -15,14 +25,6 @@ const MovieDetailPage = ({ id }: { id: string }) => {
       <MovieDetail movie={movie.data} />
     </div>
   );
-};
-
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  const id = context?.params?.id;
-
-  return {
-    props: { id },
-  };
 };
 
 export default MovieDetailPage;
