@@ -5,6 +5,7 @@
   flex-direction: column;
   gap: 1rem;
   color: white;
+  padding: 30px;
 }
 
 .cardImageWrapper {
@@ -47,7 +48,7 @@
   width: 33px;
   position: absolute;
   top: 0px;
-  right: 35px;
+  right: 3px;
   border-radius: 0 0.75rem 0 0.75rem;
   font-size: 1.4rem;
 }
