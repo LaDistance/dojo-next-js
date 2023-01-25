@@ -43,18 +43,16 @@ export const moviesRouter = createTRPCRouter({
   }),
   getById: publicProcedure
     .input(
-      z
-        .object({
-          id: z.string(),
-        })
-        .optional()
+      z.object({
+        id: z.string(),
+      })
     )
     .query(async ({ input }) => {
       const headers = {
-        Authorization: `Bearer ${process.env.TMDB_BEARER_TOKEN}`,
+        Authorization: `Bearer ${env.TMDB_BEARER_TOKEN}`,
       };
       const response = await fetch(
-        `${process.env.TMDB_API_BASE_URL}/movie/${input?.id}`,
+        `${env.TMDB_API_BASE_URL}/movie/${input.id}`,
         {
           headers: headers,
         }

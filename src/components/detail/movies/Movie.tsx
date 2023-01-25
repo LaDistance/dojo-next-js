@@ -1,4 +1,4 @@
-import { Movie } from "../../../server/api/routers/movies";
+import type { Movie } from "../../../server/api/routers/movies";
 import MovieCard from "../../cards/MovieCard";
 import styles from "./Movie.module.css";
 
@@ -11,7 +11,9 @@ export default function MovieDetail({ movie }: { movie: Movie }) {
       <section className={styles.movieInfo}>
         <section>
           {movie?.genres?.map((genre) => (
-            <span className={styles.label}>{genre.name}</span>
+            <span key={genre.name} className={styles.label}>
+              {genre.name}
+            </span>
           ))}
         </section>
         <section>
