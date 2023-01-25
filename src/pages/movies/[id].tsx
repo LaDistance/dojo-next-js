@@ -1,11 +1,9 @@
 import { GetServerSideProps } from "next";
 import MovieDetail from "../../components/detail/movies/Movie";
-import { IMovie } from "../../types/movie";
 import styles from "./[id].module.css";
+import { Movie } from "../../server/api/routers/movies";
 
-export default function (props: { movie: IMovie }) {
-  const { movie } = props;
-
+export default function ({ movie }: { movie: Movie}) {
   return (
     <div className={styles.main}>
       <MovieDetail movie={movie} />

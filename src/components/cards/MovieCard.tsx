@@ -1,12 +1,9 @@
 import Image from "next/image";
-import { IMovie } from "../../types/movie";
 import styles from "./MovieCard.module.css";
-
+import { Movie } from "../../server/api/routers/movies";
 import { BiListPlus } from "react-icons/bi";
 
-export default function MovieCard(props: { movie: IMovie }) {
-  const { movie } = props;
-
+export default function MovieCard({movie} : {movie: Movie}) {
   const imageUrl = "https://image.tmdb.org/t/p/w500";
 
   return (

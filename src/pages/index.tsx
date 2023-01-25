@@ -1,28 +1,19 @@
 import { type NextPage } from "next";
 import Link from "next/link";
 import styles from "./index.module.css";
-
-import { useEffect, useState } from "react";
 import MovieCard from "../components/cards/MovieCard";
-import { IMovie } from "../types/movie";
+import { api } from "../utils/api";
 
 const Home: NextPage = () => {
-  const [movies, setMovies] = useState<IMovie[] | null>(null);
+  const movies = api.movies.getPopular.useQuery();
+  
+  if (movies.isLoading) return <div>Loading...</div>;
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const response = await fetch("/api/movies/popular");
-      const data = await response.json();
-      setMovies(data.results);
-    };
-
-    fetchData().catch(console.error);
-  }, []);
-
+  if (movies.isError) return <div>Error: {movies.error.message}</div>;
   return (
     <>
       <div className={styles.cardRow}>
-        {movies?.map((movie) => (
+        {movies.data.map((movie) => (
           <Link
             href={`/movies/${movie.id}`}
             key={movie.title + movie.release_date}

@@ -1,9 +1,7 @@
-import { IMovie } from "../../../types/movie";
 import MovieCard from "../../cards/MovieCard";
+import { Movie } from "../../../server/api/routers/movies";
 
-export default function MovieDetail(props: { movie: IMovie }) {
-  const { movie } = props;
-
+export default function MovieDetail({movie} : {movie: Movie}) {
   return (
     <div>
       <MovieCard movie={movie} />

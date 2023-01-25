@@ -21,6 +21,8 @@ export const serverSchema = z.object({
   ),
   GITHUB_CLIENT_ID: z.string(),
   GITHUB_CLIENT_SECRET: z.string(),
+  TMDB_API_BASE_URL: z.string().url(),
+  TMDB_BEARER_TOKEN: z.string(),
 });
 
 /**
@@ -35,6 +37,8 @@ export const serverEnv = {
   NEXTAUTH_URL: process.env.NEXTAUTH_URL,
   GITHUB_CLIENT_ID: process.env.GITHUB_CLIENT_ID,
   GITHUB_CLIENT_SECRET: process.env.GITHUB_CLIENT_SECRET,
+  TMDB_API_BASE_URL: process.env.TMDB_API_BASE_URL,
+  TMDB_BEARER_TOKEN: process.env.TMDB_BEARER_TOKEN,
 };
 
 /**
