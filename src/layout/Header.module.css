@@ -5,7 +5,8 @@
   font-size: 1.5rem;
   gap: 0.5rem;
   justify-content: space-between;
-  background-color: #ddd;
+  background-color: #e3e3f5;
+  color: #000;
 }
 
 .showcaseText {
@@ -14,5 +15,11 @@
 }
 
 .loginButton {
-  text-decoration-line: none;
+  display: inline-flex;
+  align-items: center;
+}
+
+/* Sorry it's ugly */
+.textWithIconRight {
+  margin-right: 5px;
 }

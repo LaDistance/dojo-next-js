@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { BiListPlus } from "react-icons/bi";
-import { Movie } from "../../server/api/routers/movies";
+import type { Movie } from "../../server/api/routers/movies";
 import styles from "./MovieCard.module.css";
 import { AddToListModal } from "../modals/AddToListModal";
 import { useState } from "react";
