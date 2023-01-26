@@ -1,6 +1,8 @@
-import { Button, Divider, Input, InputRef, Modal, Select, Space } from "antd";
+import type { InputRef } from "antd";
+import { Button, Divider, Input, Modal, Select, Space } from "antd";
+import type { Dispatch, SetStateAction } from "react";
+import { useRef, useState } from "react";
 import type { Movie } from "../../server/api/routers/movies";
-import { Dispatch, SetStateAction, useRef, useState } from "react";
 import { api } from "../../utils/api";
 
 export const AddToListModal = ({

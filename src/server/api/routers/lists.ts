@@ -1,6 +1,16 @@
 import { z } from "zod";
 
-import { createTRPCRouter, publicProcedure, protectedProcedure } from "../trpc";
+import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
+import { movieSchema } from "./movies";
+
+export const ListSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  userId: z.string(),
+  movies: z.array(movieSchema),
+});
+
+export type List = z.infer<typeof ListSchema>;
 
 export const listsRouter = createTRPCRouter({
   hello: publicProcedure
@@ -63,7 +73,7 @@ export const listsRouter = createTRPCRouter({
         },
       });
 
-      return {list: list};
+      return { list: list };
     }),
   getSecretMessage: protectedProcedure.query(() => {
     return "you can now see this secret message!";

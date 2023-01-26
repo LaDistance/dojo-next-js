@@ -29,7 +29,7 @@ const AuthShowcase: React.FC = () => {
     {
       key: "2",
       label: (
-        <Link className={styles.loginButton} href="/user/lists">
+        <Link className={styles.loginButton} href="/lists">
           <span className={styles.textWithIconRight}>My lists</span>
           <BiListUl />
         </Link>
