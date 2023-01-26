@@ -19,7 +19,7 @@ const Home: NextPage = () => {
             href={`/movies/${movie.id}`}
             key={movie.title + movie.release_date}
           >
-            <MovieCard movie={movie} />
+            <MovieCard enableButton={false} movie={movie} />
           </Link>
         ))}
       </div>

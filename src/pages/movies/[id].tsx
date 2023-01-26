@@ -11,10 +11,15 @@ const MovieDetailPage = () => {
   useEffect(() => {
     if (!router.isReady) return;
     const query = router.query;
-    setMovieId(query?.id);
-  }, [router.isReady, router.query]);
+    if (!query.id) return;
+    if (typeof query.id !== "string") {
+      setMovieId(query.id[0] as string);
+    } else {
+      setMovieId(query.id);
+    }
+  }, [router.asPath, router.isReady, router.query]);
 
-  const movie = api.movies.getById.useQuery({ id: movieId });
+  const movie = api.movies.getById.useQuery({ id: movieId }, { enabled: !!movieId });
 
   if (movie.isLoading) return <div>Loading...</div>;
 

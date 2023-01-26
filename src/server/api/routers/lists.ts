@@ -31,7 +31,7 @@ export const listsRouter = createTRPCRouter({
         movie: z.object({
           id: z.string(),
           title: z.string(),
-          release_date: z.string(),
+          release_date: z.date(),
           overview: z.string(),
           image_path: z.string(),
         }),
@@ -63,9 +63,7 @@ export const listsRouter = createTRPCRouter({
         },
       });
 
-      const myDate: Date = new Date();
-
-      return {list: list, mydate: myDate};
+      return {list: list};
     }),
   getSecretMessage: protectedProcedure.query(() => {
     return "you can now see this secret message!";

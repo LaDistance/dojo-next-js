@@ -6,7 +6,7 @@ export default function MovieDetail({ movie }: { movie: Movie }) {
   return (
     <div className={styles.movieDetail}>
       <section className={styles.movieCard}>
-        <MovieCard movie={movie} />
+        <MovieCard enableButton movie={movie} />
       </section>
       <section className={styles.movieInfo}>
         <section>

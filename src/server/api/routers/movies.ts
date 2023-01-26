@@ -52,15 +52,18 @@ export const moviesRouter = createTRPCRouter({
       })
     )
     .query(async ({ input }) => {
+
       const headers = {
         Authorization: `Bearer ${env.TMDB_BEARER_TOKEN}`,
       };
+
       const response = await fetch(
         `${env.TMDB_API_BASE_URL}/movie/${input.id}`,
         {
           headers: headers,
         }
       );
+      
       const parsedData = movieSchema.parse(await response.json());
 
       return parsedData;
