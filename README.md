@@ -1,17 +1,18 @@
 # Dojo Next.js
 
 # Version française
+
 ## Introduction
 
 Bonjour et bienvenue dans ce dojo intitulé "Créer des applications Full Stack avec Next.js" !
 
-Dans ce dojo, nous vous montrerons une stack qui est, selon nous, l'une des meilleures stack en ce moment en matière de Developer eXperience. 
-L'application que nous créerons ensemble a un but assez simple : pouvoir se créer des listes de vos films favoris. Cependant pour que cela soit un peu plus amusant, 
+Dans ce dojo, nous vous montrerons une stack qui est, selon nous, l'une des meilleures stack en ce moment en matière de Developer eXperience.
+L'application que nous créerons ensemble a un but assez simple : pouvoir se créer des listes de vos films favoris. Cependant pour que cela soit un peu plus amusant,
 nous irons de bout en bout : de la conception au déploiement, et ceci en seulement quelques heures ! Merci Next.js ;)
 
 ## Prérequis
 
-[pnpm](https://pnpm.io/fr/installation) 
+[pnpm](https://pnpm.io/fr/installation)
 
 ## Etape 1 : concept(ion)
 
@@ -24,7 +25,7 @@ On pourrait très bien imaginer une page de connexion, une page d'accueil dans l
 
 Tout d'abord il nous faut une base de données pour stocker nos listes de films et leurs notes. En réalité, pour une utilisation aussi simple, vous pourriez choisir presque n'importe quel moteur de base de données, mais par préférence nous utiliserons PostgreSQL dans ce dojo. Pour vous éviter de setup une base de données vous-mêmes, nous profiterons de l'offre gratuite de [Neon](https://neon.tech), qui fait du PostgreSQL managé avec une offre gratuite assez généreuse.
 
-Voici le schéma qui me vient à l'esprit quand je pense à la base de données de cette application (bien évidemment, cela peut être fait de multiples manières différentes): 
+Voici le schéma qui me vient à l'esprit quand je pense à la base de données de cette application (bien évidemment, cela peut être fait de multiples manières différentes):
 
 ![french_schema](../fr/images/dojo_db_schema_fr.png)
 
@@ -40,9 +41,9 @@ Une fois que vous avez digéré toutes ces informations, il est l'heure de prép
 
 ### Neon : un PG managé en deux minutes chrono.
 
-Comme dit précédemment, nous avons besoin d'une base de données. Cependant, ceci étant un dojo, je ne vais pas commencer à vous expliquer comment setup une base avec Docker, ou vous demander de setup une base managée payante. Notre moteur préféré (PostgreSQL, bien évidemment) est disponible en version managée, avec une offre gratuite largement suffisante pour nos besoins actuels, chez [Neon.tech](https://neon.tech) ! 
+Comme dit précédemment, nous avons besoin d'une base de données. Cependant, ceci étant un dojo, je ne vais pas commencer à vous expliquer comment setup une base avec Docker, ou vous demander de setup une base managée payante. Notre moteur préféré (PostgreSQL, bien évidemment) est disponible en version managée, avec une offre gratuite largement suffisante pour nos besoins actuels, chez [Neon.tech](https://neon.tech) !
 
-Utilisez votre navigateur favori (Firefox master race. Pas de discussion.) pour naviguer sur la page d'accueil de Neon : 
+Utilisez votre navigateur favori (Firefox master race. Pas de discussion.) pour naviguer sur la page d'accueil de Neon :
 
 ![neon_home](en/images/neon_homepage.png)
 
@@ -55,12 +56,12 @@ Utilisez le provider que vous voulez. Vous arriverez sur cette page :
 ![neon_no_project_yet](en/images/neon_no_project_yet.png)
 
 Créez un projet et donnez-lui le nom que vous voulez.
-On n'oublie pas la localisation de la DB qui nous donne de meilleures performances et qui limite (un peu...) la perte de souveraineté de nos données au profit de nos collègues américains. 
+On n'oublie pas la localisation de la DB qui nous donne de meilleures performances et qui limite (un peu...) la perte de souveraineté de nos données au profit de nos collègues américains.
 
 ![neon_project_creation](en/images/neon_project_creation.png)
 
 Une fois ceci fait, vous pouvez accéder à votre base de données grâce à la chaine de connexion fournie par Neon. Patientez un petit peu, nous voulons d'abord configurer une branche de développement.
-Naviguez vers la section "Branches" de l'interface et créez une branche "dev". 
+Naviguez vers la section "Branches" de l'interface et créez une branche "dev".
 
 ![neon_branches_1](en/images/neon_branches_1.png)
 
@@ -70,7 +71,37 @@ Retournez au niveau de la section "Branches" de l'interface et constatez la cré
 
 ![neon_branches_2](en/images/neon_branches_2.png)
 
+Pour utiliser Prisma avec Neon, il est aussi nécessaire de créer une "shadow database" côté Neon.
+Cette seconde base de données permet à Prisma de détecter les différences de schéma lors des migrations.
+
+Rendez-vous donc dans l'onglet "Tables" de l'interface et dans "Database", sélectionnez "Create new database".
+Donnez-lui un nom et cliquez sur créer. Récupérez l'URL de connexion.
+
+Pour plus d'informations vous pouvez aussi suivre ce guide (anglais) :
+https://neon.tech/docs/guides/prisma
+
 Votre base de données est prête à être utilisée. Nous configurerons le lien à celle-ci un peu plus tard.
+
+### Création de compte TMDB
+
+Pour utiliser l'API de TMDB, il faut se créer un compte utilisateur sur le site TMDB.
+Rendez-vous sur https://www.themoviedb.org/signup et créez un compte.
+**Entrez un email valide car vous devrez valider son existence.**
+
+Une fois votre compte créer, il faut faire une demande de clé API : https://www.themoviedb.org/settings/api/new?type=developer.
+Celle-ci devrait être automatiquement acceptée, mais il est vous de même demandé de renseigner pourquoi vous souhaitez utiliser l'API.
+
+Pour remplir le formulaire, choisissez :
+Type of use : Personal
+
+Entrez un nom qui vous convient et en URL vous pouvez renseigner l'url `localhost:3000`.
+Mettez une petite description de pourquoi vous souhaitez utiliser l'application (par exemple: `To participate to a dojo about nextjs`)
+
+Vous devez ensuite renseigner des informations personnelles.
+A vous de choisir si vous souhaitez remplir avec des vraies infos ou du lorem ipsum. Aucune vérification n'est effectuée derrière.
+
+Après avoir soumis le formulaire vous devriez avoir accès à vos clés d'API.
+Pour ce tutoriel nous aurons besoin de `API Read Access Token (v4 auth)`.
 
 ### De l'authentification très rapidement à l'aide du provider GitHub.
 
@@ -93,11 +124,11 @@ Nous ferons la même opération pour votre application en production un peu plus
 
 Pour cette application, nous utiliserons la [T3 stack](https://create.t3.gg/) (sans Tailwind, je ne suis pas un grand fan de Tailwind. Peut-être un jour ?). Nous avons déjà explicité les différents modules présents dans la T3 stack plus haut : Next.js, Prisma, NextAuth, tRPC, TypeScript (T3 vient de TypeScript, tRPC, Tailwind).
 
-Pour lancer une application T3, utilisons pnpm dans le dossier de votre choix : 
+Pour lancer une application T3, utilisons pnpm dans le dossier de votre choix :
 
-```pnpm create t3-app```
+`pnpm create t3-app`
 
-Le CLI vous guide, configurez votre boilerplate comme ceci : 
+Le CLI vous guide, configurez votre boilerplate comme ceci :
 
 ![pnpm_create_t3_app](en/images/pnpm_create_t3_app.png)
 
@@ -105,3 +136,22 @@ Le CLI vous guide, configurez votre boilerplate comme ceci :
 
 Plus qu'un peu de configuration et nous pourrons commencer à développer notre application.
 
+#### Variables d'environnement
+
+Dupliquez le fichier `.env.example` à la racine de ce repository et renommez le en `.env`.
+
+##### Base de donnnées
+
+Pour les liens de base de données, rendez-vous sur l'interface "Dashboard" de Neon et récupérez les "Connection string" des 2 bases de données (classique et shadow). Celles-ci devraient avoir cette forme `postgres://{username}@{host}/{dbname}`.
+Il manque donc le mot de passe et si vous ne l'avez pas noté lors des précédentes étapes de configuration, vous pouvez facilement le réinitialiser.
+Une fois le mot de passe en votre possession, modifier les "Connection string" pour qu'elles aient la forme suivante : `postgres://{username}:{password}@{host}/{dbname}`.
+Renseignez-les après le `=` des variables d'environnement explicitement nommées `DATABASE_URL` et `SHADOW_DATABASE_URL`.
+
+##### API TMDB
+
+Renseignez la clé d'API `API Read Access Token (v4 auth)` après `TMDB_BEARER_TOKEN=`.
+Pour l'URL : `TMDB_API_BASE_URL=https://api.themoviedb.org/3`.
+
+##### Next Auth
+
+Nous utiliserrons l'URL d'authentification suivante `NEXTAUTH_URL=http://localhost:3000`.
