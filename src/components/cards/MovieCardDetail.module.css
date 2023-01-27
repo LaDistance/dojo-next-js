@@ -39,4 +39,32 @@
 
 .title {
   font-size: 2.5rem;
+  text-transform: uppercase;
+}
+
+.addToListBtn {
+  padding: 5px 5px 0 5px;
+  background-color: #000;
+  width: 33px;
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  border-radius: 0 0.75rem 0 0.75rem;
+  font-size: 1.4rem;
+  cursor: pointer;
+}
+
+.addToListBtn:hover {
+  background-color: rgb(189, 28, 28);
+}
+
+.cardImageWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+.cardImage {
+  border-radius: 0.75rem;
 }

@@ -3,13 +3,22 @@ import { Button, Dropdown } from "antd";
 import { signIn, signOut, useSession } from "next-auth/react";
 import Link from "next/link";
 import { BiListUl } from "react-icons/bi";
-import { RiAccountPinCircleLine, RiLogoutBoxRLine } from "react-icons/ri";
+import {
+  RiAccountPinCircleLine,
+  RiLogoutBoxRLine,
+  RiMovie2Line,
+} from "react-icons/ri";
 import styles from "./Header.module.css";
 
 export default function Header() {
   return (
     <nav className={styles.nav}>
-      <Link href="/">MOVIZZ</Link>
+      <Link href="/">
+        <span className={[styles.alignedIconHelper, styles.logo].join(" ")}>
+          M<RiMovie2Line />
+          VIES
+        </span>
+      </Link>
       <AuthShowcase />
     </nav>
   );
@@ -29,7 +38,7 @@ const AuthShowcase: React.FC = () => {
     {
       key: "2",
       label: (
-        <Link className={styles.loginButton} href="/lists">
+        <Link className={styles.alignedIconHelper} href="/lists">
           <span className={styles.textWithIconRight}>My lists</span>
           <BiListUl />
         </Link>
@@ -39,7 +48,7 @@ const AuthShowcase: React.FC = () => {
       key: "3",
       label: (
         <span
-          className={styles.loginButton}
+          className={styles.alignedIconHelper}
           onClick={sessionData ? () => void signOut() : () => void signIn()}
         >
           <span className={styles.textWithIconRight}>
@@ -56,13 +65,16 @@ const AuthShowcase: React.FC = () => {
       <div>
         {sessionData ? (
           <Dropdown menu={{ items }}>
-            <Button className={styles.loginButton}>
+            <Button className={styles.alignedIconHelper}>
               <span className={styles.textWithIconRight}>Account</span>
               <RiAccountPinCircleLine />
             </Button>
           </Dropdown>
         ) : (
-          <Button className={styles.loginButton} onClick={() => void signIn()}>
+          <Button
+            className={styles.alignedIconHelper}
+            onClick={() => void signIn()}
+          >
             {"Sign in"}
           </Button>
         )}

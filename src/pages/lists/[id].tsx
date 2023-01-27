@@ -29,7 +29,7 @@ const ListDetailPage = () => {
 
   return (
     <div>
-      <ListDetail key={listId} list={list} />
+      <ListDetail key={listId} list={list.data} />
     </div>
   );
 };

@@ -32,7 +32,7 @@ export const listsRouter = createTRPCRouter({
       })
     )
     .query(async ({ ctx, input }) => {
-      const list = await ctx.prisma.list.findUnique({
+      const list = await ctx.prisma.list.findUniqueOrThrow({
         where: {
           id: input.id,
         },
@@ -40,8 +40,6 @@ export const listsRouter = createTRPCRouter({
           movies: true,
         },
       });
-
-      console.log(list);
 
       return list;
     }),
