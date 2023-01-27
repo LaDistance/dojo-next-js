@@ -19,7 +19,10 @@ const MovieDetailPage = () => {
     }
   }, [router.asPath, router.isReady, router.query]);
 
-  const movie = api.movies.getById.useQuery({ id: movieId }, { enabled: !!movieId });
+  const movie = api.movies.getById.useQuery(
+    { id: movieId },
+    { enabled: !!movieId }
+  );
 
   if (movie.isLoading) return <div>Loading...</div>;
 

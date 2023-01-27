@@ -17,13 +17,13 @@ export default function MovieDetail({ movie }: { movie: Movie }) {
             </span>
           ))}
         </section>
-        <p>
+        <div className={styles.margin}>
           <span>
             <Rate allowHalf disabled defaultValue={movie.vote_average / 2} />(
             {movie.vote_average})
           </span>
           <small className={styles.margin}>{movie.vote_count} votes</small>
-        </p>
+        </div>
         <section className={styles.description}>{movie.overview}</section>
       </section>
     </div>

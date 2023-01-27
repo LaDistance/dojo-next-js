@@ -1,12 +1,17 @@
 import Image from "next/image";
-import Link from "next/link";
+import { useState } from "react";
 import { BiListPlus } from "react-icons/bi";
 import type { Movie } from "../../server/api/routers/movies";
-import styles from "./MovieCard.module.css";
 import { AddToListModal } from "../modals/AddToListModal";
-import { useState } from "react";
+import styles from "./MovieCard.module.css";
 
-export default function MovieCard({ movie, enableButton }: { movie: Movie, enableButton: boolean }) {
+export default function MovieCard({
+  movie,
+  enableButton,
+}: {
+  movie: Movie;
+  enableButton: boolean;
+}) {
   const imageUrl = "https://image.tmdb.org/t/p/w500";
   const [isModalVisible, setModalVisible] = useState(false);
 
@@ -22,15 +27,27 @@ export default function MovieCard({ movie, enableButton }: { movie: Movie, enabl
               width="250"
               height="375"
             ></Image>
-              {enableButton ? <div className={styles.addToListBtn} onClick={(event) => {setModalVisible(true); event.stopPropagation()}}>
+            {enableButton ? (
+              <div
+                className={styles.addToListBtn}
+                onClick={(event) => {
+                  setModalVisible(true);
+                  event.stopPropagation();
+                }}
+              >
                 <BiListPlus />
-              </div> : null}
+              </div>
+            ) : null}
           </div>
-          <p className={styles.cardInfo}>{movie.release_date}</p>
+          <p className={styles.cardInfo}>{movie.release_date.toString()}</p>
           <p className={styles.cardTitle}>{movie.title}</p>
         </div>
       ) : null}
-      <AddToListModal movie={movie} visible={isModalVisible} setVisible={setModalVisible} />
+      <AddToListModal
+        movie={movie}
+        visible={isModalVisible}
+        setVisible={setModalVisible}
+      />
     </>
   );
 }

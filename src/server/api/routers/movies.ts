@@ -4,21 +4,19 @@ import { env } from "../../../env/server.mjs";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 
 export const movieSchema = z.object({
+  id: z.number(),
   poster_path: z.string(),
   adult: z.boolean(),
   overview: z.string(),
-  release_date: z.string(),
-  genre_ids: z.array(z.number()).nullish(),
+  release_date: z.union([z.string(), z.date()]),
   genres: z.array(z.object({ id: z.number(), name: z.string() })).nullish(),
-  id: z.number(),
   original_title: z.string(),
   original_language: z.string(),
   title: z.string(),
-  backdrop_path: z.string(),
-  popularity: z.number(),
-  vote_count: z.number(),
   video: z.boolean(),
+  vote_count: z.number(),
   vote_average: z.number(),
+  popularity: z.number(),
 });
 
 export type Movie = z.infer<typeof movieSchema>;
@@ -30,9 +28,7 @@ export const listResponseSchema = z.object({
   total_pages: z.number(),
 });
 
-
 export const moviesRouter = createTRPCRouter({
-  
   getPopular: protectedProcedure.query(async () => {
     const headers = { Authorization: `Bearer ${env.TMDB_BEARER_TOKEN}` };
 
@@ -52,7 +48,6 @@ export const moviesRouter = createTRPCRouter({
       })
     )
     .query(async ({ input }) => {
-
       const headers = {
         Authorization: `Bearer ${env.TMDB_BEARER_TOKEN}`,
       };
@@ -63,7 +58,7 @@ export const moviesRouter = createTRPCRouter({
           headers: headers,
         }
       );
-      
+
       const parsedData = movieSchema.parse(await response.json());
 
       return parsedData;

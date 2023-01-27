@@ -13,12 +13,10 @@ const Home: NextPage = () => {
 
   return (
     <>
+      <h1>Popular movies</h1>
       <div className={styles.cardRow}>
         {movies.data.map((movie) => (
-          <Link
-            href={`/movies/${movie.id}`}
-            key={movie.title + movie.release_date}
-          >
+          <Link href={`/movies/${movie.id}`} key={`${movie.id}_${movie.title}`}>
             <MovieCard enableButton={false} movie={movie} />
           </Link>
         ))}

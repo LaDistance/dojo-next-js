@@ -70,17 +70,32 @@ model VerificationToken {
 }
 
 model Movie {
-  id           String          @id
-  title        String
-  release_date DateTime
-  overview     String
-  image_path   String
-  lists        List[]
-  users        LinkUserMovie[]
+  id                Int             @id @default(autoincrement())
+  title             String
+  release_date      DateTime
+  overview          String
+  poster_path       String
+  lists             List[]
+  users             LinkUserMovie[]
+  vote_count        Int
+  vote_average      Float
+  original_title    String
+  original_language String
+  popularity        Float
+  genres            Genre[]
+  adult             Boolean
+  video             Boolean
+}
+
+model Genre {
+  id      Int    @id @default(autoincrement())
+  name    String
+  Movie   Movie? @relation(fields: [movieId], references: [id])
+  movieId Int
 }
 
 model List {
-  id     String  @id @default(cuid())
+  id     Int     @id @default(autoincrement())
   name   String
   user   User    @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId String
@@ -88,11 +103,11 @@ model List {
 }
 
 model LinkUserMovie {
-  id      String  @id @default(cuid())
+  id      Int     @id @default(autoincrement())
   user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId  String
-  movie   Movie   @relation(fields: [movieId], references: [id], onDelete: Cascade)
-  movieId String
+  Movie   Movie?  @relation(fields: [movieId], references: [id], onDelete: Cascade)
+  movieId Int?
   comment String?
   rating  Int?
 }
