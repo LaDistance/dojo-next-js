@@ -1,11 +1,10 @@
-import type { InputRef } from "antd";
 import type { SelectValue } from "antd/es/tree-select";
 import type { Dispatch, SetStateAction } from "react";
 import type { Movie } from "../../server/api/routers/movies";
 import type { NamedObject } from "../../types/general";
 
 import { Button, Divider, Input, Modal, Select, Space } from "antd";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { api } from "../../utils/api";
 
 export const AddToListModal = ({
@@ -17,11 +16,15 @@ export const AddToListModal = ({
   visible: boolean;
   setVisible: Dispatch<SetStateAction<boolean>>;
 }) => {
-  const createListWithMovie = api.lists.createListWithMovie.useMutation();
+  const createListWithMovie = api.lists.createListWithMovie.useMutation({
+    onSuccess: (data) => {
+      setSelectedList({ id: data.list.id, name: data.list.name });
+    },
+  });
   const addMovieToList = api.lists.addMovieToList.useMutation();
   const { data, isLoading, isError, error } = api.lists.getAll.useQuery();
 
-  const inputRef = useRef<InputRef>(null);
+  const [open, setOpen] = useState(false);
   const [name, setName] = useState("");
   const [selectedList, setSelectedList] = useState<NamedObject | undefined>(
     undefined
@@ -55,10 +58,8 @@ export const AddToListModal = ({
       },
     });
 
+    setOpen(false);
     setName("");
-    setTimeout(() => {
-      inputRef.current?.focus();
-    }, 0);
   };
 
   const updateList = (
@@ -74,10 +75,8 @@ export const AddToListModal = ({
       },
     });
 
+    setOpen(false);
     setName("");
-    setTimeout(() => {
-      inputRef.current?.focus();
-    }, 0);
   };
 
   if (isLoading) return <div>Loading...</div>;
@@ -102,6 +101,8 @@ export const AddToListModal = ({
           placeholder="Select a list"
           options={data.map((list) => ({ label: list.name, value: list.id }))}
           onSelect={onSelectList}
+          open={open}
+          onDropdownVisibleChange={(visible) => setOpen(visible)}
           dropdownRender={(menu) => (
             <>
               {menu}
@@ -109,7 +110,6 @@ export const AddToListModal = ({
               <Space style={{ padding: "0 8px 4px" }}>
                 <Input
                   placeholder="Please enter item"
-                  ref={inputRef}
                   value={name}
                   onChange={onNameChange}
                 />

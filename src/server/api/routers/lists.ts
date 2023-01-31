@@ -66,9 +66,7 @@ export const listsRouter = createTRPCRouter({
                 ...input.movie,
                 genres: {
                   createMany: {
-                    data: input?.movie?.genres?.map((genre) => {
-                      name: genre.name;
-                    }),
+                    data: input.movie.genres,
                   },
                 },
               },
@@ -108,9 +106,7 @@ export const listsRouter = createTRPCRouter({
                 ...input.movie,
                 genres: {
                   createMany: {
-                    data: input?.movie?.genres?.map((genre) => {
-                      name: genre.name;
-                    }),
+                    data: input.movie.genres,
                   },
                 },
               },
