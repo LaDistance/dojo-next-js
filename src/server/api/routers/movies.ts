@@ -9,7 +9,7 @@ export const movieSchema = z.object({
   adult: z.boolean(),
   overview: z.string(),
   release_date: z.union([z.string(), z.date()]),
-  genres: z.array(z.object({ id: z.number(), name: z.string() })),
+  genres: z.array(z.object({ id: z.number(), name: z.string() })).nullish(),
   original_title: z.string(),
   original_language: z.string(),
   title: z.string(),
