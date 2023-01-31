@@ -1,8 +1,11 @@
 import type { InputRef } from "antd";
-import { Button, Divider, Input, Modal, Select, Space } from "antd";
+import type { SelectValue } from "antd/es/tree-select";
 import type { Dispatch, SetStateAction } from "react";
-import { useRef, useState } from "react";
 import type { Movie } from "../../server/api/routers/movies";
+import type { NamedObject } from "../../types/general";
+
+import { Button, Divider, Input, Modal, Select, Space } from "antd";
+import { useRef, useState } from "react";
 import { api } from "../../utils/api";
 
 export const AddToListModal = ({
@@ -15,16 +18,31 @@ export const AddToListModal = ({
   setVisible: Dispatch<SetStateAction<boolean>>;
 }) => {
   const createListWithMovie = api.lists.createListWithMovie.useMutation();
+  const addMovieToList = api.lists.addMovieToList.useMutation();
   const { data, isLoading, isError, error } = api.lists.getAll.useQuery();
 
   const inputRef = useRef<InputRef>(null);
   const [name, setName] = useState("");
+  const [selectedList, setSelectedList] = useState<NamedObject | undefined>(
+    undefined
+  );
 
   const onNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setName(event.target.value);
   };
 
-  const addItem = (
+  const onSelectList = (
+    value: SelectValue,
+    option: {
+      label: string;
+      value: number;
+    }
+  ) => {
+    setSelectedList({ id: option.value, name: option.label });
+  };
+
+  // Handlers
+  const createList = (
     e: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>
   ) => {
     e.preventDefault();
@@ -32,11 +50,8 @@ export const AddToListModal = ({
     createListWithMovie.mutate({
       listName: name,
       movie: {
-        id: `${movie.id}`,
-        title: movie.title,
+        ...movie,
         release_date: new Date(movie.release_date),
-        image_path: movie.poster_path,
-        overview: movie.overview,
       },
     });
 
@@ -45,6 +60,26 @@ export const AddToListModal = ({
       inputRef.current?.focus();
     }, 0);
   };
+
+  const updateList = (
+    e: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>
+  ) => {
+    e.preventDefault();
+    // Do the mutation of adding a movie to a list
+    addMovieToList.mutate({
+      listId: selectedList?.id || 0,
+      movie: {
+        ...movie,
+        release_date: new Date(movie.release_date),
+      },
+    });
+
+    setName("");
+    setTimeout(() => {
+      inputRef.current?.focus();
+    }, 0);
+  };
+
   if (isLoading) return <div>Loading...</div>;
 
   if (isError) return <div>Error: {error.message}</div>;
@@ -53,8 +88,9 @@ export const AddToListModal = ({
     <Modal
       title="Add to List"
       open={visible}
-      onOk={() => {
+      onOk={(event) => {
         setVisible(false);
+        updateList(event);
       }}
       onCancel={() => {
         setVisible(false);
@@ -65,6 +101,7 @@ export const AddToListModal = ({
           style={{ width: "100%" }}
           placeholder="Select a list"
           options={data.map((list) => ({ label: list.name, value: list.id }))}
+          onSelect={onSelectList}
           dropdownRender={(menu) => (
             <>
               {menu}
@@ -76,7 +113,7 @@ export const AddToListModal = ({
                   value={name}
                   onChange={onNameChange}
                 />
-                <Button type="text" onClick={addItem}>
+                <Button type="text" onClick={createList}>
                   Add item
                 </Button>
               </Space>

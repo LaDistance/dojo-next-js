@@ -1,11 +1,10 @@
 import { z } from "zod";
+import { NamedObject } from "../../../types/general";
 
-import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
+import { createTRPCRouter, protectedProcedure } from "../trpc";
 import { movieSchema } from "./movies";
 
-export const ListSchema = z.object({
-  id: z.string(),
-  name: z.string(),
+export const ListSchema = NamedObject.extend({
   userId: z.string(),
   movies: z.array(movieSchema),
 });
@@ -13,14 +12,6 @@ export const ListSchema = z.object({
 export type List = z.infer<typeof ListSchema>;
 
 export const listsRouter = createTRPCRouter({
-  hello: publicProcedure
-    .input(z.object({ text: z.string() }))
-    .query(({ input }) => {
-      return {
-        greeting: `Hello ${input.text}`,
-      };
-    }),
-
   getAll: protectedProcedure.query(async ({ ctx }) => {
     const lists = await ctx.prisma.list.findMany({
       where: {
@@ -34,17 +25,30 @@ export const listsRouter = createTRPCRouter({
     return lists;
   }),
 
+  getById: protectedProcedure
+    .input(
+      z.object({
+        id: z.number(),
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      const list = await ctx.prisma.list.findUniqueOrThrow({
+        where: {
+          id: input.id,
+        },
+        include: {
+          movies: true,
+        },
+      });
+
+      return list;
+    }),
+
   createListWithMovie: protectedProcedure
     .input(
       z.object({
         listName: z.string(),
-        movie: z.object({
-          id: z.string(),
-          title: z.string(),
-          release_date: z.date(),
-          overview: z.string(),
-          image_path: z.string(),
-        }),
+        movie: movieSchema,
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -59,23 +63,69 @@ export const listsRouter = createTRPCRouter({
                 id: input.movie.id,
               },
               create: {
-                id: input.movie.id,
-                title: input.movie.title,
-                release_date: input.movie.release_date,
-                overview: input.movie.overview,
-                image_path: input.movie.image_path,
+                ...input.movie,
+                genres: {
+                  createMany: {
+                    data: input?.movie?.genres?.map((genre) => {
+                      name: genre.name;
+                    }),
+                  },
+                },
               },
             },
           },
         },
         include: {
-          movies: true,
+          movies: {
+            include: {
+              genres: true,
+            },
+          },
         },
       });
 
       return { list: list };
     }),
-  getSecretMessage: protectedProcedure.query(() => {
-    return "you can now see this secret message!";
-  }),
+
+  addMovieToList: protectedProcedure
+    .input(
+      z.object({
+        listId: z.number(),
+        movie: movieSchema,
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      // Endpoint used when the list does not exist yet
+      const list = await ctx.prisma.list.update({
+        where: { id: input.listId },
+        data: {
+          movies: {
+            connectOrCreate: {
+              where: {
+                id: input.movie.id,
+              },
+              create: {
+                ...input.movie,
+                genres: {
+                  createMany: {
+                    data: input?.movie?.genres?.map((genre) => {
+                      name: genre.name;
+                    }),
+                  },
+                },
+              },
+            },
+          },
+        },
+        include: {
+          movies: {
+            include: {
+              genres: true,
+            },
+          },
+        },
+      });
+
+      return { list: list };
+    }),
 });

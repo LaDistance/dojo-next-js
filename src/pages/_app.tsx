@@ -1,6 +1,8 @@
+import { ConfigProvider, theme } from "antd";
 import { type Session } from "next-auth";
 import { SessionProvider } from "next-auth/react";
 import { type AppType } from "next/app";
+const { darkAlgorithm } = theme;
 
 import BaseLayout from "../layout/BaseLayout";
 
@@ -14,9 +16,15 @@ const MyApp: AppType<{ session: Session | null }> = ({
 }) => {
   return (
     <SessionProvider session={session}>
-      <BaseLayout>
-        <Component {...pageProps} />
-      </BaseLayout>
+      <ConfigProvider
+        theme={{
+          algorithm: darkAlgorithm,
+        }}
+      >
+        <BaseLayout>
+          <Component {...pageProps} />
+        </BaseLayout>
+      </ConfigProvider>
     </SessionProvider>
   );
 };

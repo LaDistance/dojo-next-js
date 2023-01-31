@@ -2,9 +2,8 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
   min-height: 100vh;
-  background-image: linear-gradient(to bottom, #1c1a1f, #090a20);
+  background-color: #141414;
   color: #fff;
 }
 
@@ -15,7 +14,7 @@
   align-items: center;
   justify-content: center;
   gap: 3rem;
-  padding: 4rem 1rem;
+  padding: 3rem 1rem;
 }
 
 @media (min-width: 640px) {
