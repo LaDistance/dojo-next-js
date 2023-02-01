@@ -155,3 +155,35 @@ Pour l'URL : `TMDB_API_BASE_URL=https://api.themoviedb.org/3`.
 ##### Next Auth
 
 Nous utiliserrons l'URL d'authentification suivante `NEXTAUTH_URL=http://localhost:3000`.
+
+## Déploiement Vercel
+
+### Création et configuration de compte
+
+- Créer un compte chez Vercel : https://vercel.com. Avec votre compte GitHub vous pourrez directement donner accès à vos repositories à Vercel.
+  - Si authentification avec GitHub (ou autre site de contrôle de version) : autorisez tout ou partie de vos repositories.
+  - Si authentification par mail : vous pourrez donner l'URL d'un repository via son URL publique.
+- Créer un nouveau projet : https://vercel.com/new
+
+  - Si authentification par mail, cliquez sur "Import Third-Party Git Repostiory", et entrez l'URL publique du repository souhaité.
+    ![vercel_email_authent_new_project](fr/images/vercel_email_authent_new_project.png)
+
+  - Si authentification par GitHub, importez le repository souhaité via le bouton "import" en face du nom du repository, ou ajoutez le via les droits accordés à Vercel.
+    ![vercel_github_authent_new_project](fr/images/vercel_github_authent_new_project.png)
+
+### Configuration du projet
+
+![vercel_configure_project](fr/images/vercel_configure_project.png)
+
+1. Nommez votre project comme bon vous semble. A noter que ce sera l'URL de votre projet (en version Hobby), où l'URL sera de la forme : https://{project_name}.vercel.app/
+2. Insérez vos variables d'environnement qui se trouvent dans le fichier `.env` précédement configuré.  
+   La variable `NEXTAUTH_URL` n'est pas nécessaire quand le déploiement est sur Vercel.  
+   Il faut cependant en créer une autre : `NEXTAUTH_SECRET`.  
+    **Veuillez suivre cette documentation pour en comprendre d'avantage : https://next-auth.js.org/deployment#vercel**
+
+Une fois ces étapes effectuées, cliquez sur "Deploy".  
+Vous pourrez suivre l'état d'avancement du déploiement et serez notifié d'une erreur ou du succès de l'opération.
+
+Si tout se passe bien vous aurez accès à votre application déployée.
+
+_Toutes ces opérations peuvent être effectuées via la CLI de Vercel : https://vercel.com/docs/cli/deploying-from-cli_
