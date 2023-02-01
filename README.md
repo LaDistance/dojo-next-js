@@ -132,27 +132,30 @@ Le CLI vous guide, configurez votre boilerplate comme ceci :
 
 ![pnpm_create_t3_app](en/images/pnpm_create_t3_app.png)
 
-### Configuration des outils
+## Configuration des outils
 
 Plus qu'un peu de configuration et nous pourrons commencer à développer notre application.
 
-#### Variables d'environnement
+### Variables d'environnement
 
 Dupliquez le fichier `.env.example` à la racine de ce repository et renommez le en `.env`.
 
-##### Base de donnnées
+#### Base de donnnées
 
-Pour les liens de base de données, rendez-vous sur l'interface "Dashboard" de Neon et récupérez les "Connection string" des 2 bases de données (classique et shadow). Celles-ci devraient avoir cette forme `postgres://{username}@{host}/{dbname}`.
+Pour les liens de base de données, rendez-vous sur l'interface "Dashboard" de Neon et récupérez les "Connection string" des 2 bases de données (classique et shadow).  
+Celles-ci devraient avoir cette forme `postgres://{username}@{host}/{dbname}`.
+
 Il manque donc le mot de passe et si vous ne l'avez pas noté lors des précédentes étapes de configuration, vous pouvez facilement le réinitialiser.
-Une fois le mot de passe en votre possession, modifier les "Connection string" pour qu'elles aient la forme suivante : `postgres://{username}:{password}@{host}/{dbname}`.
+
+Une fois le mot de passe en votre possession, modifier les "Connection string" pour qu'elles aient la forme suivante : `postgres://{username}:{password}@{host}/{dbname}`.  
 Renseignez-les après le `=` des variables d'environnement explicitement nommées `DATABASE_URL` et `SHADOW_DATABASE_URL`.
 
-##### API TMDB
+#### API TMDB
 
 Renseignez la clé d'API `API Read Access Token (v4 auth)` après `TMDB_BEARER_TOKEN=`.
 Pour l'URL : `TMDB_API_BASE_URL=https://api.themoviedb.org/3`.
 
-##### Next Auth
+#### Next Auth
 
 Nous utiliserrons l'URL d'authentification suivante `NEXTAUTH_URL=http://localhost:3000`.
 
