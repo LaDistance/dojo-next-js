@@ -58,7 +58,7 @@ model User {
   lists         List[]
   accounts      Account[]
   sessions      Session[]
-  movies        LinkUserMovie[]
+  ratings       Ratings[]
 }
 
 model VerificationToken {
@@ -76,7 +76,7 @@ model Movie {
   overview          String
   poster_path       String
   lists             List[]
-  users             LinkUserMovie[]
+  ratings           Ratings[]
   vote_count        Int
   vote_average      Float
   original_title    String
@@ -102,12 +102,13 @@ model List {
   movies Movie[]
 }
 
-model LinkUserMovie {
-  id      Int     @id @default(autoincrement())
+model Ratings {
   user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId  String
   Movie   Movie?  @relation(fields: [movieId], references: [id], onDelete: Cascade)
-  movieId Int?
+  movieId Int
   comment String?
   rating  Int?
+  
+  @@id([userId, movieId])
 }

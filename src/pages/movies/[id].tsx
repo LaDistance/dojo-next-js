@@ -3,11 +3,12 @@ import { useEffect, useState } from "react";
 import MovieDetail from "../../components/detail/movies/Movie";
 import { api } from "../../utils/api";
 import styles from "./[id].module.css";
+import { useSession } from "next-auth/react";
 
 const MovieDetailPage = () => {
   const router = useRouter();
   const [movieId, setMovieId] = useState<string>("");
-
+  const session = useSession();
   useEffect(() => {
     if (!router.isReady) return;
     const query = router.query;
@@ -23,6 +24,8 @@ const MovieDetailPage = () => {
     { id: movieId },
     { enabled: !!movieId }
   );
+
+
 
   if (movie.isLoading) return <div>Loading...</div>;
 

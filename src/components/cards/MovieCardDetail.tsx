@@ -6,9 +6,19 @@ import { imageUrl } from "../../constants";
 import type { Movie } from "../../server/api/routers/movies";
 import { AddToListModal } from "../modals/AddToListModal";
 import styles from "./MovieCardDetail.module.css";
+import { api } from "../../utils/api";
 
 export default function MovieCardDetail({ movie }: { movie: Movie }) {
   const [isModalVisible, setModalVisible] = useState(false);
+
+  const movieUserRating = api.movies.getMovieRating.useQuery({ id: movie.id });
+
+  const rateMovie = api.movies.rateMovie.useMutation({
+    onSuccess: async (data) => {
+      console.log(data);
+      await movieUserRating.refetch();
+    },
+  });
 
   return (
     <div className={styles.movieDetail}>
@@ -50,6 +60,7 @@ export default function MovieCardDetail({ movie }: { movie: Movie }) {
           <small className={styles.margin}>{movie.vote_count} votes</small>
         </div>
         <section className={styles.description}>{movie.overview}</section>
+        <section className={styles.margin}> {movieUserRating.data?.rating}</section>
       </section>
       <AddToListModal
         movie={movie}

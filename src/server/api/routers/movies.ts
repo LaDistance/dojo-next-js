@@ -63,4 +63,59 @@ export const moviesRouter = createTRPCRouter({
 
       return parsedData;
     }),
+
+  rateMovie: protectedProcedure
+    .input(
+      z.object({
+        id: z.number(),
+        rating: z.number(),
+        comment: z.string(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      // Upsert rating for the current user and the movie with id 'id'
+
+      const rating = await ctx.prisma.ratings.upsert({
+        where: {
+          userId_movieId: {
+            userId: ctx.session.user.id,
+            movieId: input.id,
+          },
+        },
+        update: {
+          rating: input.rating,
+          comment: input.comment,
+        },
+        create: {
+          rating: input.rating,
+          comment: input.comment,
+          movieId: input.id,
+          userId: ctx.session.user.id,
+        },
+      });
+
+      return rating;
+    }),
+
+    getMovieRating: protectedProcedure
+    .input(
+      z.object({
+        id: z.number(),
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      // Get rating for the current user and the movie with id 'id'
+
+      const rating = await ctx.prisma.ratings.findUnique({
+        where: {
+          userId_movieId: {
+            userId: ctx.session.user.id,
+            movieId: input.id,
+          },
+        },
+      });
+
+      return rating;
+    }),
+
 });
