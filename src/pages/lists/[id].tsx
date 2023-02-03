@@ -1,9 +1,10 @@
+import type { NextPage } from "next";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import ListDetail from "../../components/detail/lists/ListDetail";
 import { api } from "../../utils/api";
 
-const ListDetailPage = () => {
+const ListDetailPage: NextPage = () => {
   const router = useRouter();
   const [listId, setlistId] = useState<number>(-1);
 

@@ -3,7 +3,7 @@ import { imageUrl } from "../../constants";
 import type { Movie } from "../../server/api/routers/movies";
 import styles from "./MovieCardList.module.css";
 
-export default function MovieCardList({ movie }: { movie: Movie }) {
+const MovieCardList = ({ movie }: { movie: Movie }) => {
   return (
     <>
       {movie ? (
@@ -23,4 +23,6 @@ export default function MovieCardList({ movie }: { movie: Movie }) {
       ) : null}
     </>
   );
-}
+};
+
+export default MovieCardList;

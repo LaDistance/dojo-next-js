@@ -10,7 +10,7 @@ import {
 } from "react-icons/ri";
 import styles from "./Header.module.css";
 
-export default function Header() {
+const Header = () => {
   return (
     <nav className={styles.nav}>
       <Link href="/">
@@ -22,7 +22,7 @@ export default function Header() {
       <AuthShowcase />
     </nav>
   );
-}
+};
 
 const AuthShowcase: React.FC = () => {
   const { data: sessionData } = useSession();
@@ -82,3 +82,5 @@ const AuthShowcase: React.FC = () => {
     </>
   );
 };
+
+export default Header;

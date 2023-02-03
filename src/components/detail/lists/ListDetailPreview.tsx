@@ -5,7 +5,7 @@ import type { Movie } from "../../../server/api/routers/movies";
 import MovieCardList from "../../cards/MovieCardList";
 import styles from "./ListDetail.module.css";
 
-export default function ListDetailPreview({ list }: { list: List }) {
+const ListDetailPreview = ({ list }: { list: List }) => {
   return (
     <div>
       <h1>{list.name.toUpperCase()}</h1>
@@ -24,4 +24,6 @@ export default function ListDetailPreview({ list }: { list: List }) {
       </div>
     </div>
   );
-}
+};
+
+export default ListDetailPreview;

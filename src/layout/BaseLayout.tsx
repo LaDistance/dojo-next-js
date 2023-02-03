@@ -1,9 +1,8 @@
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 import ContentLayout from "./ContentLayout";
 import Header from "./Header";
 
-export default function BaseLayout(props: { children: ReactNode }) {
-  // Variables
+const BaseLayout = (props: { children: ReactNode }) => {
   const { children } = props;
 
   return (
@@ -16,4 +15,6 @@ export default function BaseLayout(props: { children: ReactNode }) {
       </div>
     </main>
   );
-}
+};
+
+export default BaseLayout;

@@ -1,6 +1,5 @@
 import { type NextPage } from "next";
-import Link from "next/link";
-import MovieCardList from "../components/cards/MovieCardList";
+import MovieCollection from "../components/collection/movies/MovieCollection";
 import { api } from "../utils/api";
 import styles from "./index.module.css";
 
@@ -14,13 +13,7 @@ const Home: NextPage = () => {
   return (
     <>
       <h1 className={styles.title}>Popular movies</h1>
-      <div className={styles.cardRow}>
-        {movies.data.map((movie) => (
-          <Link href={`/movies/${movie.id}`} key={`${movie.id}_${movie.title}`}>
-            <MovieCardList movie={movie} />
-          </Link>
-        ))}
-      </div>
+      <MovieCollection movies={movies.data} />
     </>
   );
 };
