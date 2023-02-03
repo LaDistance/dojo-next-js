@@ -16,11 +16,15 @@ const ListDetailPreview = ({ list }: { list: List }) => {
             <MovieCardList movie={movie} key={movie.id} />
           </Link>
         ))}
-        <Link href={`/lists/${list.id}`} key={`${list.id}_${list.name}`}>
-          <Button block type="primary">
-            View full list
-          </Button>
-        </Link>
+        {list.movies.length > 3 ? (
+          <Link href={`/lists/${list.id}`} key={`${list.id}_${list.name}`}>
+            <Button block type="primary">
+              View full list
+            </Button>
+          </Link>
+        ) : (
+          <></>
+        )}
       </div>
     </div>
   );
