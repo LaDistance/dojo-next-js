@@ -67,19 +67,19 @@ export const moviesRouter = createTRPCRouter({
   rateMovie: protectedProcedure
     .input(
       z.object({
-        id: z.number(),
+        movie: movieSchema,
         rating: z.number(),
         comment: z.string(),
       })
     )
     .mutation(async ({ ctx, input }) => {
       // Upsert rating for the current user and the movie with id 'id'
-
+      console.log(input.movie.id, input.rating, input.comment)
       const rating = await ctx.prisma.ratings.upsert({
         where: {
           userId_movieId: {
             userId: ctx.session.user.id,
-            movieId: input.id,
+            movieId: input.movie.id,
           },
         },
         update: {
@@ -89,8 +89,34 @@ export const moviesRouter = createTRPCRouter({
         create: {
           rating: input.rating,
           comment: input.comment,
-          movieId: input.id,
-          userId: ctx.session.user.id,
+          user: {
+            connect: {
+              id: ctx.session.user.id,
+            },
+          },
+          Movie: {
+            connectOrCreate: {
+              where: {
+                id: input.movie.id,
+              },
+              create: {
+                ...input.movie,
+                release_date: new Date(input.movie.release_date),
+                genres: {
+                  createMany: {
+                    data: input.movie?.genres || [],
+                  },
+                },
+              },
+            }
+          }
+        },
+        include: {
+          Movie: {
+            include: {
+              genres: true,
+            },
+          },
         },
       });
 
