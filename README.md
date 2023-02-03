@@ -163,13 +163,47 @@ Vous aurez aussi besoin d'un `NEXTAUTH_SECRET`. Celui-ci sert à saler les donn�
 
 ## Développement
 
-Il est maintenant temps de coder ! Préparez vos claviers :) 
-### Schéma Prisma 
+Il est maintenant temps de coder ! Préparez vos claviers :)
 
-La toute première chose que nous allons vouloir faire durant le développement est de créer votre modèle. 
+### Frontend
+
+Pour la partie front, commençons par la création de la page d'accueil.
+
+#### Layout
+
+Comme j'aimerais que mon site ait un design similaire sur toutes les pages et que certains éléments appairaissent sur toutes les pages, nous allons créer un layout. Ce layout comprendra un header et un body.  
+Comme nous souhaitons que ce layout soit appliqué sur toutes les pages, nous allons devoir englober nos composants rendus par l'application, dans le return de `src/pages/\_app.tsx`.
+Le layout est défini ici : `src/layout/ContentLayout.tsx`.
+
+#### Composants
+
+La création de composants est une importante partie de la philosophie de création d'une application avec React. Ils permettent notamment de bien séparer vos morceaux de code d'UI et/ou de logique.  
+Nous allons donc essayé d'en créer plusieurs lors de ce dojo.  
+Ils sont créés dans le dossier `src/components`.
+
+### NextJS
+
+#### Routes
+
+Les routes NextJS sont déclarées dans le dossier `pages` d'un projet NextJS. L'arborescence qui découle définira le routage des urls de l'application.
+Par exemple :
+`pages/movies/` sera accessible par l'URL `/movies`.
+
+#### Pages avec routes dynamiques
+
+Pour accéder à une page de détail d'un objet de votre arborescence, vous pouvez créer des routes des dynamiques.  
+Pour les déclarer il faut nommer votre fichier/dossier de la sorte `[param]` (nom du query parameter entre crochets) où `param` correspond à la clé dans l'objet `query` renvoyé par l'objet `router` de NextJS.  
+Il est possible d'avoir plusieurs routes dynamiques imbriquées. Attention dans ce cas à ne pas nommer vos variables avec le même nom.
+
+Exemple :
+`pages/movies/[movieId]/ratings/[ratingId]`
+https://nextjs.org/docs/routing/dynamic-routes
+
+### Schéma Prisma
+
+La toute première chose que nous allons vouloir faire durant le développement est de créer votre modèle.
 
 Dans le dossier `prisma` à la racine de votre projet, modifiez le fichier `schema.prisma`.
-
 
 ## Déploiement Vercel
 
