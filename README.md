@@ -27,7 +27,7 @@ Tout d'abord il nous faut une base de données pour stocker nos listes de films 
 
 Voici le schéma qui me vient à l'esprit quand je pense à la base de données de cette application (bien évidemment, cela peut être fait de multiples manières différentes):
 
-![french_schema](../fr/images/dojo_db_schema_fr.png)
+![french_schema](fr/images/dojo_db_schema_fr.png)
 
 Pour faire communiquer notre interface et notre base de données, nous utiliserons [Prisma](https://www.prisma.io/). Prisma est un ORM pour TypeScript qui gère les migrations, le modèle de votre base de données, mais aussi la sécurité des types (type-safety) et l'autocomplétion, que nous aimons beaucoup chez les devs TypeScript.
 
@@ -86,10 +86,11 @@ Votre base de données est prête à être utilisée. Nous configurerons le lien
 
 Pour utiliser l'API de TMDB, il faut se créer un compte utilisateur sur le site TMDB.
 Rendez-vous sur https://www.themoviedb.org/signup et créez un compte.
+
 **Entrez un email valide car vous devrez valider son existence.**
 
-Une fois votre compte créer, il faut faire une demande de clé API : https://www.themoviedb.org/settings/api/new?type=developer.
-Celle-ci devrait être automatiquement acceptée, mais il est vous de même demandé de renseigner pourquoi vous souhaitez utiliser l'API.
+Une fois votre compte créé, il faut faire une demande de clé API : https://www.themoviedb.org/settings/api/new?type=developer.
+Celle-ci devrait être automatiquement acceptée, mais il vous est tout de même demandé de renseigner pourquoi vous souhaitez utiliser l'API.
 
 Pour remplir le formulaire, choisissez :
 Type of use : Personal
@@ -157,7 +158,18 @@ Pour l'URL : `TMDB_API_BASE_URL=https://api.themoviedb.org/3`.
 
 #### Next Auth
 
-Nous utiliserrons l'URL d'authentification suivante `NEXTAUTH_URL=http://localhost:3000`.
+Nous utiliserons l'URL d'authentification suivante `NEXTAUTH_URL=http://localhost:3000`.
+Vous aurez aussi besoin d'un `NEXTAUTH_SECRET`. Celui-ci sert à saler les données quand elles sont rentrées en base. Si vous avez accès à des commandes Linux, vous pouvez utiliser la commande `openssl rand -base64 32` pour générer ce secret. Sinon, utilisez celui-ci : `qGATo8sXj7nPjGUa36u8rGZ+nLWWnJEWPLgB5Wb2q8w=`
+
+## Développement
+
+Il est maintenant temps de coder ! Préparez vos claviers :) 
+### Schéma Prisma 
+
+La toute première chose que nous allons vouloir faire durant le développement est de créer votre modèle. 
+
+Dans le dossier `prisma` à la racine de votre projet, modifiez le fichier `schema.prisma`.
+
 
 ## Déploiement Vercel
 

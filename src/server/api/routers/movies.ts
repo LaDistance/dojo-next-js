@@ -74,7 +74,6 @@ export const moviesRouter = createTRPCRouter({
     )
     .mutation(async ({ ctx, input }) => {
       // Upsert rating for the current user and the movie with id 'id'
-      console.log(input.movie.id, input.rating, input.comment)
       const rating = await ctx.prisma.ratings.upsert({
         where: {
           userId_movieId: {
@@ -94,7 +93,7 @@ export const moviesRouter = createTRPCRouter({
               id: ctx.session.user.id,
             },
           },
-          Movie: {
+          movie: {
             connectOrCreate: {
               where: {
                 id: input.movie.id,
@@ -112,7 +111,7 @@ export const moviesRouter = createTRPCRouter({
           }
         },
         include: {
-          Movie: {
+          movie: {
             include: {
               genres: true,
             },
