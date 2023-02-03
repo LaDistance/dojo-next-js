@@ -140,7 +140,9 @@ Plus qu'un peu de configuration et nous pourrons commencer à développer notre 
 ### Variables d'environnement
 
 Dupliquez le fichier `.env.example` à la racine de ce repository et renommez le en `.env`.
+La T3-stack fournit un petit module très pratique, qui parse les variables d'environnement et les valide avec Zod. Ceci permet de détecter les problèmes de configuration au démarrage du serveur plutôt que durant le runtime.
 
+Pour ajouter une variable d'environnement, il faut donc l'ajouter à deux endroits : le fichier `.env`, et le fichier `schema.mjs` dans le dossier `src/env`. 
 #### Base de donnnées
 
 Pour les liens de base de données, rendez-vous sur l'interface "Dashboard" de Neon et récupérez les "Connection string" des 2 bases de données (classique et shadow).  
@@ -169,6 +171,18 @@ Il est maintenant temps de coder ! Préparez vos claviers :)
 La toute première chose que nous allons vouloir faire durant le développement est de créer votre modèle. 
 
 Dans le dossier `prisma` à la racine de votre projet, modifiez le fichier `schema.prisma`.
+
+/!\ Attention ! Nous utilisons le provider GitHub qui nécessite un attribut en plus dans le modèle `Account` : `refresh_token_expires_in Int?`
+
+### Backend : notre premier routeur tRPC 
+
+Comme nous l'avons dit plus tôt, le token de l'API TMDB est unique. Il faut donc le cacher dans le backend, et faire un petit tour de passe-passe pour récupérer les films. 
+
+Comment peut-on faire ça ? C'est assez simple : nous allons faire un point d'API, protégé par l'authentification, qui fait lui-même cet appel à l'API TMDB et qui va renvoyer les données au frontend.
+
+Créons ensemble un routeur tRPC qui s'appelle `movies.ts`, dans le dossier suivant : `src/server/api/routers`.
+
+<!-- TODO: Plus d'informations sur le contenu du routeur -->
 
 
 ## Déploiement Vercel
