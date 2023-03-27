@@ -107,8 +107,8 @@ export const moviesRouter = createTRPCRouter({
                   },
                 },
               },
-            }
-          }
+            },
+          },
         },
         include: {
           movie: {
@@ -122,7 +122,7 @@ export const moviesRouter = createTRPCRouter({
       return rating;
     }),
 
-    getMovieRating: protectedProcedure
+  getMovieRating: protectedProcedure
     .input(
       z.object({
         id: z.number(),
@@ -142,5 +142,4 @@ export const moviesRouter = createTRPCRouter({
 
       return rating;
     }),
-
 });

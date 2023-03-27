@@ -146,12 +146,12 @@ Pour ajouter une variable d'environnement, il faut donc l'ajouter à deux endroi
 
 #### Base de donnnées
 
-Pour les liens de base de données, rendez-vous sur l'interface "Dashboard" de Neon et récupérez les "Connection string" des 2 bases de données (classique et shadow).  
+Pour les liens de base de données, rendez-vous sur l'interface "Dashboard" de Neon et récupérez les "Connection string" des 2 bases de données (classique et shadow).
 Celles-ci devraient avoir cette forme `postgres://{username}@{host}/{dbname}`.
 
 Il manque donc le mot de passe et si vous ne l'avez pas noté lors des précédentes étapes de configuration, vous pouvez facilement le réinitialiser.
 
-Une fois le mot de passe en votre possession, modifier les "Connection string" pour qu'elles aient la forme suivante : `postgres://{username}:{password}@{host}/{dbname}`.  
+Une fois le mot de passe en votre possession, modifier les "Connection string" pour qu'elles aient la forme suivante : `postgres://{username}:{password}@{host}/{dbname}`.
 Renseignez-les après le `=` des variables d'environnement explicitement nommées `DATABASE_URL` et `SHADOW_DATABASE_URL`.
 
 #### API TMDB
@@ -174,14 +174,14 @@ Pour la partie front, commençons par la création de la page d'accueil.
 
 #### Layout
 
-Comme j'aimerais que mon site ait un design similaire sur toutes les pages et que certains éléments appairaissent sur toutes les pages, nous allons créer un layout. Ce layout comprendra un header et un body.  
-Comme nous souhaitons que ce layout soit appliqué sur toutes les pages, nous allons devoir englober nos composants rendus par l'application, dans le return de `src/pages/\_app.tsx`.
+Comme j'aimerais que mon site ait un design similaire sur toutes les pages et que certains éléments appairaissent sur toutes les pages, nous allons créer un layout. Ce layout comprendra un header et un body.
+Comme nous souhaitons que ce layout soit appliqué sur toutes les pages, nous allons devoir englober nos composants rendus par l'application, dans le return de `src/pages/_app.tsx`.
 Le layout est défini ici : `src/layout/ContentLayout.tsx`.
 
 #### Composants
 
-La création de composants est une importante partie de la philosophie de création d'une application avec React. Ils permettent notamment de bien séparer vos morceaux de code d'UI et/ou de logique.  
-Nous allons donc essayé d'en créer plusieurs lors de ce dojo.  
+La création de composants est une importante partie de la philosophie de création d'une application avec React. Ils permettent notamment de bien séparer vos morceaux de code d'UI et/ou de logique.
+Nous allons donc essayé d'en créer plusieurs lors de ce dojo.
 Ils sont créés dans le dossier `src/components`.
 
 ### NextJS
@@ -194,8 +194,8 @@ Par exemple :
 
 #### Pages avec routes dynamiques
 
-Pour accéder à une page de détail d'un objet de votre arborescence, vous pouvez créer des routes des dynamiques.  
-Pour les déclarer il faut nommer votre fichier/dossier de la sorte `[param]` (nom du query parameter entre crochets) où `param` correspond à la clé dans l'objet `query` renvoyé par l'objet `router` de NextJS.  
+Pour accéder à une page de détail d'un objet de votre arborescence, vous pouvez créer des routes des dynamiques.
+Pour les déclarer il faut nommer votre fichier/dossier de la sorte `[param]` (nom du query parameter entre crochets) où `param` correspond à la clé dans l'objet `query` renvoyé par l'objet `router` de NextJS.
 Il est possible d'avoir plusieurs routes dynamiques imbriquées. Attention dans ce cas à ne pas nommer vos variables avec le même nom.
 
 Exemple :
@@ -211,13 +211,232 @@ Dans le dossier `prisma` à la racine de votre projet, modifiez le fichier `sche
 
 ### Backend : notre premier routeur tRPC
 
-Comme nous l'avons dit plus tôt, le token de l'API TMDB est unique. Il faut donc le cacher dans le backend, et faire un petit tour de passe-passe pour récupérer les films.
+Comme nous l'avons dit plus tôt, le token de l'API TMDB est unique.
+Autrement dit, c'est notre *application* qui est autorisée et pas chaque utilisateur de notre application. C'est donc à nous d'autoriser ou non les utilisateurs.
 
 Comment peut-on faire ça ? C'est assez simple : nous allons faire un point d'API, protégé par l'authentification, qui fait lui-même cet appel à l'API TMDB et qui va renvoyer les données au frontend.
 
 Créons ensemble un routeur tRPC qui s'appelle `movies.ts`, dans le dossier suivant : `src/server/api/routers`.
 
-<!-- TODO: Plus d'informations sur le contenu du routeur -->
+Voici un example très basique d'un point d'API tRPC :
+
+```TypeScript
+import { createTRPCRouter, publicProcedure } from "../trpc";
+import { z } from "zod";
+
+
+export const moviesRouter = createTRPCRouter({
+  hello: publicProcedure.input(
+    z.object({
+      who: z.string(),
+    })
+  ).query(({ input }) => {
+    return { hello: `Hello ${input.who}!`}
+  })
+});
+```
+
+L'une des raisons pour lesquelles tRPC a une Developer eXperience (DX) aussi agréable est l'abstraction. Une fois que tRPC est mis en place, vous n'avez plus en tant que développeur à vous soucier de *comment* fonctionne votre API. Bien entendu, il est important de **comprendre**, mais les détails d'implémentation de l'API ne devraient pas faire partie de la charge mentale du développeur lorsqu'il est en train de coder les points d'API eux-mêmes.
+
+Regardez à quel point il est facile d'appeler ce point d'API depuis un component :
+
+```TypeScript React
+import { api } from "../../utils/api";
+// or wherever your declaration of 'api' is
+
+export const MyComponent = () => {
+  const { data, isLoading, isError } = api.movies.hello.useQuery({ who: "reader" });
+
+  // You can render conditionally depending on isLoading and error :
+
+  if(error){
+    return(<>An error occurred.</>)
+  }
+
+  if(isLoading){
+    return(<>Loading...</>)
+  }
+
+  return(<>{data.hello}</>)
+}
+```
+
+Revenons-en à *notre* utilisation de tRPC.
+Nous allons créer ensemble un point d'API qui authentifie l'utilisateur et, si il est authentifié, fait l'appel à l'API de TMDB puis renvoie les données reçues. Pour la page d'accueil, disons que nous voulons les données des films les plus "populaires" du moment.
+
+```TypeScript
+import { z } from "zod";
+
+import { env } from "../../../env/server.mjs";
+import { createTRPCRouter, protectedProcedure } from "../trpc";
+
+export const movieSchema = z.object({
+  id: z.number(),
+  poster_path: z.string(),
+  adult: z.boolean(),
+  overview: z.string(),
+  release_date: z.union([z.string(), z.date()]),
+  genres: z.array(z.object({ id: z.number(), name: z.string() })).nullish(),
+  original_title: z.string(),
+  original_language: z.string(),
+  title: z.string(),
+  video: z.boolean(),
+  vote_count: z.number(),
+  vote_average: z.number(),
+  popularity: z.number(),
+});
+
+export type Movie = z.infer<typeof movieSchema>;
+
+export const listResponseSchema = z.object({
+  page: z.number(),
+  results: z.array(movieSchema),
+  total_results: z.number(),
+  total_pages: z.number(),
+});
+
+export const moviesRouter = createTRPCRouter({
+  getPopular: protectedProcedure.query(async () => {
+    const headers = { Authorization: `Bearer ${env.TMDB_BEARER_TOKEN}` };
+
+    const response = await fetch(`${env.TMDB_API_BASE_URL}/movie/popular`, {
+      headers: headers,
+    });
+
+    const parsedData = listResponseSchema.parse(await response.json());
+
+    return parsedData.results;
+  }),
+});
+```
+
+> Oh ! Attends une minute, il y a beaucoup plus de choses qu'avant !
+
+Je sais, ne t'en fais pas, je vais t'expliquer tout ce qui se passe ici block par block :
+
+```TypeScript
+...
+import { z } from "zod";
+...
+
+export const movieSchema = z.object({
+  id: z.number(),
+  poster_path: z.string(),
+  adult: z.boolean(),
+  overview: z.string(),
+  release_date: z.union([z.string(), z.date()]),
+  genres: z.array(z.object({ id: z.number(), name: z.string() })).nullish(),
+  original_title: z.string(),
+  original_language: z.string(),
+  title: z.string(),
+  video: z.boolean(),
+  vote_count: z.number(),
+  vote_average: z.number(),
+  popularity: z.number(),
+});
+
+export type Movie = z.infer<typeof movieSchema>;
+
+export const listResponseSchema = z.object({
+  page: z.number(),
+  results: z.array(movieSchema),
+  total_results: z.number(),
+  total_pages: z.number(),
+});
+
+...
+
+```
+Si vous n'utilisez pas encore Zod dans vos projets frontend, vous devriez essayer. Zod est une bibliothèque de validation de schémas.
+Zod s'interface avec le système de types de TypeScript pour fournir de la validation plus poussée que TypeScript, en gardant une DX très agréable.
+
+En l'occurrence ici, nous avons besoin d'assigner un type à la réponse de l'API TMDB. Nous pourrions utiliser le système de type de TypeScript, mais Zod nous permet ici de vérifier le schéma *au runtime* en plus, et de raise une erreur si jamais la réponse ne correspond pas au schéma exact que nous lui avons donné.
+
+Cependant, la réponse évidente d'un développeur serait à ce moment : "Mais je vais devoir écrire mes types plusieurs fois ! Et dans plusieurs syntaxes différentes !"
+
+Non. Car Zod a prévu ceci : lorsque vous voulez déclarer un type (au sens de TypeScript), vous pouvez inférer ce type depuis son schéma, comme nous le faisons pour le type Movie.
+
+Une fois ces schémas & types déclarés, nous pouvons typer *réellement* (de manière sûre !) la réponse de l'API de cette manière :
+
+```TypeScript
+const parsedData = listResponseSchema.parse(await response.json());
+
+return parsedData.results;
+```
+Magnifique ! Zod a typé notre 'parsedData' par inférence !
+Nous pouvons retourner 'results' de manière sûre car nous avons vérifié qu'il existait réellement à l'aise de la méthode .parse du schéma.
+
+> **__ATTENTION :__** En production, tâchez d'englober tout ce qui pourrait raise (throw) une erreur dans des blocs `try catch`.
+
+"Super ! Mais ça ne m'explique pas comment l'authentification fonctionne..."
+
+L'authentification est cachée derrière ceci :
+```TypeScript
+...
+getPopular: protectedProcedure.query
+...
+```
+Si vous allez chercher dans le fichier `src\server\api\trpc.ts`, vous y trouverez ce code :
+```TypeScript
+/**
+ * Reusable middleware that enforces users are logged in before running the
+ * procedure
+ */
+const enforceUserIsAuthed = t.middleware(({ ctx, next }) => {
+  if (!ctx.session || !ctx.session.user) {
+    throw new TRPCError({ code: "UNAUTHORIZED" });
+  }
+  return next({
+    ctx: {
+      // infers the `session` as non-nullable
+      session: { ...ctx.session, user: ctx.session.user },
+    },
+  });
+});
+
+/**
+ * Protected (authed) procedure
+ *
+ * If you want a query or mutation to ONLY be accessible to logged in users, use
+ * this. It verifies the session is valid and guarantees ctx.session.user is not
+ * null
+ *
+ * @see https://trpc.io/docs/procedures
+ */
+export const protectedProcedure = t.procedure.use(enforceUserIsAuthed);
+```
+
+Les petits malins de la T3-stack ont été assez gentils pour nous coder ça pour nous ! Ce qui se passe réellement c'est que nous utilisons un middleware pour vérifier la session de l'utilisateur. Le middleware nous passe carrément la session et l'utilisateur pour que nous puissions réutiliser ces informations dans les points d'API protégés. Sympathique non ?
+
+Une fois ce point d'API créé, il convient de l'utiliser dans un component (à quoi bon servirait-il autrement ?).
+
+Dans le fichier `src/pages/index.ts`, utilisons cette procédure :
+
+```TypeScript
+import { type NextPage } from "next";
+import MovieCollection from "../components/collection/movies/MovieCollection";
+import { api } from "../utils/api";
+import styles from "./index.module.css";
+
+const Home: NextPage = () => {
+  const { data, isLoading, isError, error } = api.movies.getPopular.useQuery();
+
+  if (isLoading) return <div>Loading...</div>;
+
+  if (isError) return <div>Error: {error.message}</div>;
+
+  return (
+    <>
+      <h1 className={styles.title}>Popular movies</h1>
+      <MovieCollection movies={data} />
+    </>
+  );
+};
+
+export default Home;
+```
+<!--  TODO: Est-ce qu'on a bien parlé de la MovieCollection ??? -->
+<!--  TODO: Reste de TRPC ! -->
 
 ## Déploiement Vercel
 
@@ -239,12 +458,12 @@ Créons ensemble un routeur tRPC qui s'appelle `movies.ts`, dans le dossier suiv
 ![vercel_configure_project](fr/images/vercel_configure_project.png)
 
 1. Nommez votre project comme bon vous semble. A noter que ce sera l'URL de votre projet (en version Hobby), où l'URL sera de la forme : https://{project_name}.vercel.app/
-2. Insérez vos variables d'environnement qui se trouvent dans le fichier `.env` précédement configuré.  
-   La variable `NEXTAUTH_URL` n'est pas nécessaire quand le déploiement est sur Vercel.  
-   Il faut cependant en créer une autre : `NEXTAUTH_SECRET`.  
+2. Insérez vos variables d'environnement qui se trouvent dans le fichier `.env` précédement configuré.
+   La variable `NEXTAUTH_URL` n'est pas nécessaire quand le déploiement est sur Vercel.
+   Il faut cependant en créer une autre : `NEXTAUTH_SECRET`.
     **Veuillez suivre cette documentation pour en comprendre d'avantage : https://next-auth.js.org/deployment#vercel**
 
-Une fois ces étapes effectuées, cliquez sur "Deploy".  
+Une fois ces étapes effectuées, cliquez sur "Deploy".
 Vous pourrez suivre l'état d'avancement du déploiement et serez notifié d'une erreur ou du succès de l'opération.
 
 Si tout se passe bien vous aurez accès à votre application déployée.
