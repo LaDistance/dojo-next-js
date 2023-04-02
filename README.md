@@ -209,12 +209,16 @@ La toute première chose que nous allons vouloir faire durant le développement 
 Dans le dossier `prisma` à la racine de votre projet, modifiez le fichier `schema.prisma`.
 /!\ Attention ! Nous utilisons le provider GitHub qui nécessite un attribut en plus dans le modèle `Account` : `refresh_token_expires_in Int?`
 
-### Backend : notre premier routeur tRPC
+### Notre page d'accueil
+#### Backend : notre premier routeur tRPC
 
-Comme nous l'avons dit plus tôt, le token de l'API TMDB est unique.
-Autrement dit, c'est notre *application* qui est autorisée et pas chaque utilisateur de notre application. C'est donc à nous d'autoriser ou non les utilisateurs.
+Puisque nous souhaitons afficher des films sur la page d'accueil, il nous faut faire une requête à l'API TMDB.
 
-Comment peut-on faire ça ? C'est assez simple : nous allons faire un point d'API, protégé par l'authentification, qui fait lui-même cet appel à l'API TMDB et qui va renvoyer les données au frontend.
+Or, comme nous l'avons dit plus tôt, le token de l'API TMDB est unique. 
+Autrement dit, c'est notre *application* qui est autorisée et pas chaque utilisateur de notre application. 
+Il nous faut donc cacher ce token, sinon il pourrait être utilisé en notre nom. Si les requêtes partent directement depuis le navigateur de vos utilisateurs avec ce token, un utilisateur serait capable de le récupérer. La requête doit donc partir d'un endroit où l'utilisateur n'a pas accès... Avez-vous une idée ? Exactement : le serveur.
+
+Comment peut-on faire ça ? C'est assez simple : nous allons faire un point d'API qui fait lui-même cet appel à l'API TMDB et qui va renvoyer les données au frontend, sans jamais communiquer le token au navigateur.
 
 Créons ensemble un routeur tRPC qui s'appelle `movies.ts`, dans le dossier suivant : `src/server/api/routers`.
 
@@ -262,7 +266,8 @@ export const MyComponent = () => {
 ```
 
 Revenons-en à *notre* utilisation de tRPC.
-Nous allons créer ensemble un point d'API qui authentifie l'utilisateur et, si il est authentifié, fait l'appel à l'API de TMDB puis renvoie les données reçues. Pour la page d'accueil, disons que nous voulons les données des films les plus "populaires" du moment.
+Nous allons créer ensemble un point d'API protégé par de l'authentification, et si l'utilisateur est authentifié, fait l'appel à l'API de TMDB puis renvoie les données reçues.
+Pour la page d'accueil, disons que nous voulons les données des films les plus "populaires" du moment.
 
 ```TypeScript
 import { z } from "zod";
@@ -435,9 +440,24 @@ const Home: NextPage = () => {
 
 export default Home;
 ```
-<!--  TODO: Est-ce qu'on a bien parlé de la MovieCollection ??? -->
-<!--  TODO: Reste de TRPC ! -->
+Nous parlerons juste après du composant React nommé `MovieCollection`.
 
+Vous remarquerez que, sans jamais déclarer ni importer le type de `data` dans votre code React, celui-ci est déjà typé. C'est ça la beauté de tRPC : les types de votre frontend et de votre backend sont synchronisés sans jamais avoir à le faire vous-même.
+Cela signifie aussi que si vous changez le type dans votre backend sans le faire dans votre frontend alors des erreurs arriveront **lors de la phase de développement**. Avant même la phase de build ou de test. Bien entendu, les erreurs arriveront aussi lors du build (et lors des tests si vous faites correctement vos tests).  
+
+#### Frontend : une superbe page d'accueil.
+
+<!-- TODO: Page d'accueil (expliquer ce qu'on veut y faire, parler du composant MovieCollection) -->
+
+### Création de listes, et rangement de films dans des listes.
+
+Comme nous l'avons précisé plus tôt, l'objectif de cette application n'est pas juste d'afficher des films, mais bien d'être un *outil* de classification de films dans des listes pour l'utilisateur.
+Pour ceci, il ne faut pas juste consulter des données, il faut en stocker. Plus précisément, il faut pouvoir créer, modifier et supprimer ces classifications.
+
+Dans tRPC, un endpoint qui permet ceci est appelé une **mutation**.
+La syntaxe d'une mutation est très proche de celle d'une query dans le backend. 
+
+<!-- TODO: Explication de la mutation que l'on veut créer, et du call Prisma -->
 ## Déploiement Vercel
 
 ### Création et configuration de compte
